@@ -60,7 +60,7 @@ logging.getLogger("main.cors").info("CORS allow_origins=%s", _cors_origins)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins,
-    allow_credentials=bool(_allowed_origin),
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
