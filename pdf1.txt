@@ -1,0 +1,58 @@
+=== PAGE 1 ===
+GenAI Website Builder — Hackathon Brief
+Individual · 6 Hours · Deliverable: One live, working public URL
+The Challenge
+Build a chat interface where a user describes a website and the system generates and renders
+it live in the browser — instantly.
+The loop: Prompt in → LLM generates code → site renders → user refines via chat.
+Output Format — Your Choice
+HTML/CSS/JS rendered in an iframe, or React components rendered dynamically. Both are
+valid. Judges score output quality, not format. Pick what you ship fastest in.
+Feature Tiers
+Tier 1 — Must Ship (by Hour 3)
+● Chat input → Groq LLM → live site preview rendering in the browser
+● At least 3 prompt types work well (landing page, portfolio, form page)
+● App deployed to a public URL
+Tier 2 — Strong Submission (by Hour 5)
+● Follow-up prompts refine the existing site, not regenerate from scratch
+● Structured JSON output { html, css, js, title } validated with Pydantic
+● Graceful error handling for malformed LLM output
+● Langfuse tracing on every LLM call
+Tier 3 — Outstanding (Hours 6)
+● Style controls — user picks palette, font, or layout before generating
+● Version history — revert to any previous generated version
+=== PAGE 2 ===
+● Multimodal — upload a sketch or screenshot, generate a site from it
+● RAG-powered design inspiration injected into the system prompt
+Judging Rubric
+Criterion Weight What Judges Look For
+UI/UX of Generated 40% Do outputs look good and work? Quality consistent
+Sites across prompt types?
+Prompt-to-Output 35% Does output match the ask? Does refinement work?
+Accuracy Edge cases handled?
+Code Quality & 25% Clean code, Pydantic validation, error handling,
+Architecture Langfuse wired in
+Judges will test 5 live prompts on your URL. A polished wrapper on a broken generator scores
+low. The generated site is the product.
+Timeline
+Hour Focus Milestone
+1 Setup, first LLM call working LLM responds to a prompt
+2–3 Core loop + preview rendering Site renders from a
+prompt
+4 Deploy to live URL ✅ Public URL live
+5–6 Tier 2 features + edge case Iterative editing works
+testing
+7–8 Tier 3 / polish / demo prep Submission ready
+Deploy at Hour 3, not Hour 6. Deployment issues need time to fix.
+Submission Checklist
+=== PAGE 3 ===
+● [ ] Live URL — publicly accessible, tested before submitting
+● [ ] GitHub repo — README with local setup in under 5 steps
+● [ ] 5-min demo — best prompt · architecture · what you'd build next
+● [ ] One-paragraph reflection — what broke, what surprised you
+Rules
+● Individual submission — no teams
+● You may use: Agno, Groq, any open-source model, any UI library
+● You may not use: pre-built website builder APIs (Webflow, Wix, etc.) — the LLM must do
+the generating
+● API keys go in environment variables — never in the repo

@@ -59,6 +59,25 @@ def _get_client():
 
 # ── Public API ────────────────────────────────────────────────────────────────
 
+def get_langfuse_prompt(name: str, fallback: str) -> Any:
+    """
+    Fetch a prompt from Langfuse Prompt Management.
+    Falls back to the provided string if Langfuse is disabled or prompt is missing.
+    """
+    client = _get_client()
+    if client is None:
+        return fallback
+
+    try:
+        # Fetch prompt from Langfuse (cached by the SDK)
+        prompt = client.get_prompt(name)
+        logger.info("Fetched prompt '%s' from Langfuse (v%d)", name, prompt.version)
+        return prompt
+    except Exception as exc:
+        logger.warning("Failed to fetch prompt '%s' from Langfuse: %s. Using fallback.", name, exc)
+        return fallback
+
+
 def trace_llm_call(
     prompt: str,
     output: Any,
@@ -125,9 +144,19 @@ def trace_llm_call(
                 "user": prompt,
             }
 
+        # If system_prompt is a Langfuse Prompt object, link it
+        langfuse_prompt = None
+        if not isinstance(system_prompt, str) and hasattr(system_prompt, "name"):
+            langfuse_prompt = system_prompt
+            system_prompt_str = system_prompt.compile()
+            generation_input["system"] = system_prompt_str
+        else:
+            system_prompt_str = system_prompt
+
         trace.generation(
             name=f"{mode}-generation",
             model=model,
+            prompt=langfuse_prompt,
             model_parameters={
                 "max_tokens": (metadata or {}).get("max_tokens", "N/A"),
             },

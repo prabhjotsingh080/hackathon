@@ -13,11 +13,13 @@ import json
 import logging
 import os
 import re
+from typing import Any
 
 from groq import Groq as GroqClient
 
 from schemas import SectionPatch, WebsiteOutput, RefinementOutput
 from rag import retrieve_design_context
+from tracer import get_langfuse_prompt
 
 logging.basicConfig(level=logging.DEBUG,
                     format="%(asctime)s [%(levelname)s] %(name)s - %(message)s")
@@ -260,10 +262,15 @@ def _detect_mime(image_bytes: bytes, fallback_mime: str) -> str:
 # ── Public functions ──────────────────────────────────────────────────────────
 def generate_website(prompt: str,
                      style_preferences: dict | None = None
-                     ) -> tuple[WebsiteOutput, str, dict]:
+                     ) -> tuple[WebsiteOutput, str, dict, Any]:
     logger.info("[PROMPT_IN] prompt=%.200s | image=no | style_prefs=%s",
                 prompt, style_preferences)
-    system = GENERATE_SYSTEM + _rag_note(prompt, style_preferences)
+
+    # Use Langfuse Prompt Management with local fallback
+    sys_prompt_obj = get_langfuse_prompt("website-generator-base", GENERATE_SYSTEM)
+    sys_compiled = sys_prompt_obj if isinstance(sys_prompt_obj, str) else sys_prompt_obj.compile()
+
+    system = sys_compiled + _rag_note(prompt, style_preferences)
     logger.debug("[SYSTEM_PROMPT generate]\n%s", system)
     user_msg = f"Create a website: {prompt}{_style_note(style_preferences)}\n\nOutput ONLY the raw JSON."
     logger.debug("[USER_MSG generate] %.400s", user_msg)
@@ -276,17 +283,22 @@ def generate_website(prompt: str,
     logger.info("[SECTIONS_SENT generate] %s",
                 [{"name": s.section, "htmlChars": len(s.html), "cssChars": len(s.css)}
                  for s in site.sections])
-    return site, raw, usage, system
+    return site, raw, usage, sys_prompt_obj
 
 
 def refine_website(prompt: str,
                    current_sections: list[SectionPatch],
                    title: str,
                    style_preferences: dict | None = None
-                   ) -> tuple[RefinementOutput, str, dict]:
+                   ) -> tuple[RefinementOutput, str, dict, Any]:
     logger.info("[PROMPT_IN refine] prompt=%.200s | sections=%s | style_prefs=%s",
                 prompt, [s.section for s in current_sections], style_preferences)
-    system = REFINE_SYSTEM + _rag_note(prompt, style_preferences)
+
+    # Use Langfuse Prompt Management with local fallback
+    sys_prompt_obj = get_langfuse_prompt("website-refiner-base", REFINE_SYSTEM)
+    sys_compiled = sys_prompt_obj if isinstance(sys_prompt_obj, str) else sys_prompt_obj.compile()
+
+    system = sys_compiled + _rag_note(prompt, style_preferences)
     logger.debug("[SYSTEM_PROMPT refine]\n%s", system)
 
     # BUG FIX: send FULL html/css — not truncated — so LLM understands the whole site
@@ -311,14 +323,14 @@ def refine_website(prompt: str,
                 [s.section for s in current_sections],
                 [s.section for s in result.changed_sections],
                 result.unchanged_section_names)
-    return result, raw, usage, system
+    return result, raw, usage, sys_prompt_obj
 
 
 def generate_website_from_image(prompt: str,
                                 image_bytes: bytes,
                                 mime_type: str,
                                 style_preferences: dict | None = None
-                                ) -> tuple[WebsiteOutput, str, dict]:
+                                ) -> tuple[WebsiteOutput, str, dict, Any]:
     logger.info("[PROMPT_IN vision] prompt=%.200s | mime=%s | style_prefs=%s",
                 prompt, mime_type, style_preferences)
 
@@ -328,7 +340,11 @@ def generate_website_from_image(prompt: str,
                 IMAGE_ENCODING, mime_type, len(image_bytes),
                 len(base64.b64encode(image_bytes)))
 
-    system = GENERATE_SYSTEM + _rag_note(prompt, style_preferences)
+    # Use Langfuse Prompt Management with local fallback
+    sys_prompt_obj = get_langfuse_prompt("website-generator-base", GENERATE_SYSTEM)
+    sys_compiled = sys_prompt_obj if isinstance(sys_prompt_obj, str) else sys_prompt_obj.compile()
+
+    system = sys_compiled + _rag_note(prompt, style_preferences)
     logger.debug("[SYSTEM_PROMPT vision]\n%s", system)
 
     # Encode image as standard base64 (RFC 4648), decoded to UTF-8 string
@@ -363,4 +379,4 @@ def generate_website_from_image(prompt: str,
     logger.info("[SECTIONS_SENT vision] %s",
                 [{"name": s.section, "htmlChars": len(s.html), "cssChars": len(s.css)}
                  for s in site.sections])
-    return site, raw, usage, system
+    return site, raw, usage, sys_prompt_obj

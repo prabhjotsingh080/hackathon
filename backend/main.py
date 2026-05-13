@@ -142,7 +142,9 @@ async def generate(
                 ms, site.title, len(site.sections), usage)
 
     if debug:
-        site.debug_system_prompt = system_prompt
+        site.debug_system_prompt = (
+            system_prompt.compile() if hasattr(system_prompt, "compile") else str(system_prompt)
+        )
     return site
 
 
@@ -197,7 +199,9 @@ async def refine(
                     [s.section for s in result.changed_sections], usage)
 
         if debug:
-            result.debug_system_prompt = system_prompt
+            result.debug_system_prompt = (
+                system_prompt.compile() if hasattr(system_prompt, "compile") else str(system_prompt)
+            )
         return result
 
     except ValueError as exc:
@@ -243,7 +247,9 @@ async def refine(
         logger.info("[LANGFUSE_SENT /refine-fallback] meta=%s", langfuse_meta)
 
         if debug:
-            fallback.debug_system_prompt = system_prompt2
+            fallback.debug_system_prompt = (
+                system_prompt2.compile() if hasattr(system_prompt2, "compile") else str(system_prompt2)
+            )
         return fallback
 
     except RuntimeError as exc:
@@ -339,7 +345,9 @@ async def generate_vision(
                 ms, site.title, len(site.sections), usage)
 
     if debug:
-        site.debug_system_prompt = system_prompt
+        site.debug_system_prompt = (
+            system_prompt.compile() if hasattr(system_prompt, "compile") else str(system_prompt)
+        )
     return site
 
 

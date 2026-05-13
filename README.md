@@ -317,10 +317,11 @@ hackathon/
 
 ## Developer Reflection
 
-> *[PLACEHOLDER — fill in before submission]*  
-> What broke: ...  
-> What surprised me: ...  
-> If I had another week: ...
+> **What broke:** JSON parsing was the biggest initial hurdle. Even with Llama 3.3, the model occasionally wrapped JSON in markdown fences or included preamble text, which broke the frontend. I solved this by implementing a robust regex-based `_extract_json` helper and a **retry-with-correction** loop that nudges the LLM if the first parse fails. CSS scoping also required several iterations to correctly handle `@import` and `@keyframes` without double-prefixing selectors.
+>
+> **What surprised me:** The sheer speed of Groq's Llama 3.3 70B model. It allowed me to move from a "full-regeneration" model to a "surgical-patch" model without the user feeling any lag. Also, the "Design RAG" approach—injecting raw CSS snippets into the prompt—had a much higher impact on design quality than complex prompt engineering alone.
+>
+> **If I had another week:** I would implement **streaming generation** so sections appear one-by-one as they are generated. I'd also replace the keyword-based RAG with a proper vector database (Chroma/Qdrant) to allow for more nuanced design retrieval, and add a "Component Library" where users could drag-and-drop pre-generated blocks.
 
 ---
 
@@ -336,6 +337,7 @@ This prompt hits: RAG (hero + pricing + CTA snippets retrieved), style controls 
 2. **RAG injection**: Open backend logs → show `[RAG]` line listing which design snippets were retrieved
 3. **CSS scoping**: Open DevTools Elements tab → show `#section-hero .hero-title` scoped selectors
 4. **Debug panel**: Add `?debug=true` → show live HTML stats + copy assembled HTML
+5. **Prompt Management**: Open Langfuse Dashboard → show the versioned prompts being fetched remotely by the backend.
 
 ### Follow-up refinement to demo
 > *"Make the hero section neon green on black, like a hacker terminal"*

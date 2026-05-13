@@ -1,0 +1,72 @@
+=== PAGE 1 ===
+Participant Handbook
+GenAI Website Builder Hackathon
+Reference this when you're stuck. Not required reading upfront.
+Suggested Architecture
+None
+React + Tailwind (Chat UI + Live Preview)
+↓
+FastAPI Backend
+↓
+Groq (LLM Inference)
+↓
+Pydantic — validates { html, css, js, title }
+↓
+Langfuse (traces every LLM call)
+Deployment — Get Live by Hour 4
+Platform Best For Free
+Vercel React frontends ✅
+Netlify Static HTML/JS output ✅
+Render FastAPI backends ✅
+Railway Full-stack + database ✅
+=== PAGE 2 ===
+Steps: Push to GitHub → connect repo on Vercel/Render → add GROQ_API_KEY as
+environment variable → deploy.
+Reference Docs
+Groq — LLM Inference
+Quickstart console.groq.com/docs/quickstart
+Models console.groq.com/docs/models
+Structured Output console.groq.com/docs/responses-a
+pi
+Tool Use console.groq.com/docs/tool-use
+Vision / Multimodal console.groq.com/docs/vision
+Cookbook (code github.com/groq/groq-api-cookbook
+examples)
+Agno — Agent Framework
+GitHub + Docs github.com/agno-agi/agno
+Groq + Agno Guide console.groq.com/docs/agn
+o
+FastAPI — Backend
+Official Docs fastapi.tiangolo.com
+First Steps fastapi.tiangolo.com/tutorial/first-steps
+Request fastapi.tiangolo.com/tutorial/body
+Body
+=== PAGE 3 ===
+Pydantic — Output Validation
+Official Docs docs.pydantic.dev
+With FastAPI fastapi.tiangolo.com/tutorial/extra-models
+Langfuse — Observability
+Docs langfuse.com/docs
+Tracing Quickstart langfuse.com/docs/observability/get-starte
+d
+Deployment
+Vercel + React vercel.com/kb/guide/deploying-react-with-vercel
+guide
+FastAPI on Render render.com/docs/deploy-fastapi
+Bootcamp Skills Being Tested
+Week What's Under Evaluation
+Week Streaming LLM calls, prompt design, Langfuse tracing
+1
+Week Structured outputs with Pydantic, error handling
+2
+Week RAG for design inspiration (Tier 3)
+3
+Week Agentic / multi-step generation (Tier 3)
+4
+Week Prompt robustness — vague and adversarial inputs
+5
+=== PAGE 4 ===
+Week Multimodal — sketch/screenshot to site (Tier 3)
+6
+Week Knowing when prompting alone is sufficient
+9
