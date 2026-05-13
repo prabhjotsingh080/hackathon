@@ -50,12 +50,17 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-_allowed_origin = os.getenv("ALLOWED_ORIGIN", "").strip()
-_cors_origins = (
-    [_allowed_origin, "http://localhost:3000", "http://localhost:5173"]
-    if _allowed_origin else ["*"]
-)
-logging.getLogger("main.cors").info("CORS allow_origins=%s", _cors_origins)
+# CORS setup
+_allowed_origin_env = os.getenv("ALLOWED_ORIGIN", "").strip()
+if _allowed_origin_env:
+    # Handle comma-separated list of origins
+    _cors_origins = [o.strip() for o in _allowed_origin_env.split(",") if o.strip()]
+    # Always include common local dev ports
+    _cors_origins.extend(["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000", "http://127.0.0.1:5173"])
+else:
+    _cors_origins = ["*"]
+
+logger.info("CORS initialized with origins: %s", _cors_origins)
 
 app.add_middleware(
     CORSMiddleware,
@@ -63,6 +68,7 @@ app.add_middleware(
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 
