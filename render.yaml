@@ -1,0 +1,30 @@
+# render.yaml — Render.com infrastructure-as-code for the FastAPI backend
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: genai-website-builder-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
+    plan: free                     # upgrade to starter for always-on
+    healthCheckPath: /health
+
+    envVars:
+      # Set these as secret values in the Render dashboard (do NOT commit real keys)
+      - key: GROQ_API_KEY
+        sync: false
+
+      - key: LANGFUSE_PUBLIC_KEY
+        sync: false
+
+      - key: LANGFUSE_SECRET_KEY
+        sync: false
+
+      - key: LANGFUSE_BASE_URL
+        value: https://cloud.langfuse.com
+
+      # Your Vercel frontend URL — e.g. https://genai-website-builder.vercel.app
+      - key: ALLOWED_ORIGIN
+        sync: false

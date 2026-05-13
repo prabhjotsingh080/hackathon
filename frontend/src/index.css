@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Thin custom scrollbars ─────────────────────────────────────── */
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: #334155; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* ── Smooth autogrow textarea ────────────────────────────────────── */
+textarea { field-sizing: content; }
+
+/* ── Remove iframe default border ───────────────────────────────── */
+iframe { border: none; }
