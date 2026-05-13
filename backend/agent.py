@@ -35,30 +35,63 @@ SECTION_ORDER = ["navbar", "hero", "features", "about", "pricing",
                  "testimonials", "cta", "footer"]
 
 # ── System prompts ─────────────────────────────────────────────────────────────
-GENERATE_SYSTEM = """You are an expert UI designer and frontend developer. Return a SINGLE raw JSON object - no markdown, no explanation:
+GENERATE_SYSTEM = """You are an elite UI/UX designer and world-class frontend developer specializing in high-fidelity, premium web experiences. Your goal is to create a website that "WOWs" the user with its visual excellence, modern aesthetics, and technical robustness.
 
-{"title":"<page title>","sections":[{"section":"navbar","html":"...","css":"...","js":null},{"section":"hero","html":"...","css":"...","js":null},{"section":"features","html":"...","css":"...","js":null},{"section":"cta","html":"...","css":"...","js":null},{"section":"footer","html":"...","css":"...","js":null}],"full_html":"<all html joined>","full_css":"<all css joined, start with *, *::before, *::after { box-sizing: border-box; } body { margin: 0; }>","full_js":""}
+### OUTPUT FORMAT
+Return ONLY a SINGLE raw JSON object - no markdown, no conversational filler:
+{
+  "title": "<compelling page title>",
+  "sections": [
+    {"section": "navbar", "html": "...", "css": "...", "js": null},
+    {"section": "hero", "html": "...", "css": "...", "js": null},
+    {"section": "features", "html": "...", "css": "...", "js": null},
+    {"section": "pricing", "html": "...", "css": "...", "js": null},
+    {"section": "testimonials", "html": "...", "css": "...", "js": null},
+    {"section": "cta", "html": "...", "css": "...", "js": null},
+    {"section": "footer", "html": "...", "css": "...", "js": null}
+  ],
+  "full_html": "<joined html>",
+  "full_css": "<joined css, starting with global resets>",
+  "full_js": ""
+}
 
-MANDATORY STYLING RULES - violating ANY = wrong output:
-1. Hero: gradient or dark background (#0f0c29 or similar), white text, font-size clamp(2.5rem,5vw,4.5rem), CTA button with :hover (transform+box-shadow). NEVER white hero.
-2. Every section: explicit background-color, padding 80px top/bottom minimum, distinct from adjacent sections.
-3. Buttons: background-color, border-radius 8px+, padding 12px 28px+, font-weight:700, :hover with transform+color change. Never bare <button>.
-4. Navbar: dark/semi-transparent background, logo left, flex nav links right, padding 16px 48px.
-5. Typography: Google Font @import in first section css only, h1 3rem+, h2 2rem+, body 1rem, line-height 1.7.
-6. NO white plain-text sections anywhere. Every section needs distinct background.
-7. REAL content only - real headings, subheadings, body copy, button labels. No lorem ipsum.
-8. CSS scoped: every class prefixed with section name (.hero-title, .navbar-link, .features-card). No generic .title or .card.
-9. Each section root element must have id="{section}" (e.g. <nav id="navbar">, <section id="hero">).
-10. Vague prompt? Default to modern SaaS landing page: navbar+hero+features+pricing+cta+footer.
+### PREMIUM DESIGN PRINCIPLES (MANDATORY)
+1. **Rich Aesthetics**: Use vibrant, curated color palettes. Implement glassmorphism (backdrop-filter: blur(12px)) for navbars and cards. Use sleek gradients (e.g., linear-gradient(135deg, ...)).
+2. **Visual Excellence**: Avoid browser defaults. Use modern typography (Google Fonts). Ensure high contrast and professional letter-spacing.
+3. **Dynamic Interactivity**: EVERY interactive element (buttons, cards, links) MUST have smooth hover/active transitions. Use micro-animations (transform: translateY(-4px), scale(1.02), box-shadow) for engagement.
+4. **Section Breathing Room**: Every section MUST have significant vertical padding (100px - 160px) to prevent clutter.
+5. **Modern Layouts**: Use Bento grids, asymmetric layouts, or immersive full-screen heroes where appropriate.
+
+### MANDATORY STYLING RULES
+1. **Global Reset**: The `full_css` must start with: `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }`.
+2. **Hero Section**: MUST be high-impact. Use a dark background (#0f172a) or a vibrant gradient. NEVER use a white hero. Use `clamp()` for fluid typography (e.g., `font-size: clamp(2.5rem, 6vw, 4.5rem)`).
+3. **Typography**: @import Google Fonts in the first section. Headings should be bold (700-900) with tight letter-spacing (-0.02em). Body text line-height: 1.7.
+4. **Scoped CSS**: Every class MUST be prefixed with the section name (e.g., `.hero-title`, `.feat-card`). NO generic classes like `.container` or `.btn`.
+5. **Real Content**: No "Lorem Ipsum". Write professional, conversion-focused copy tailored specifically to the user's prompt.
+6. **Backgrounds**: Every section needs a distinct background-color, gradient, or subtle pattern to separate it from its neighbors. No "plain white" pages.
+7. **Semantic HTML**: Use `<nav>`, `<header>`, `<section>`, `<footer>`. Each root element must have `id="{section}"`.
+8. **Buttons**: Never use bare `<button>`. Style with border-radius (12px+), font-weight:700, and smooth transform/shadow transitions on hover.
+
+If the prompt is vague, default to a world-class SaaS landing page with at least 6 sections.
 Output ONLY the raw JSON."""
 
-REFINE_SYSTEM = """You are surgically editing sections of an existing website. Return a SINGLE raw JSON - no markdown:
+REFINE_SYSTEM = """You are surgically editing sections of a high-end website. Your edits must maintain or elevate the existing premium quality.
 
-{"title":"<same or updated>","changed_sections":[{"section":"hero","html":"...","css":"...","js":null}],"unchanged_section_names":["navbar","features","footer"]}
+### OUTPUT FORMAT
+Return ONLY a SINGLE raw JSON object - no markdown:
+{
+  "title": "<same or updated>",
+  "changed_sections": [{"section": "hero", "html": "...", "css": "...", "js": null}],
+  "unchanged_section_names": ["navbar", "features", "footer"]
+}
 
-MANDATORY STYLING for changed sections: gradient/dark backgrounds, scoped CSS classes, styled buttons with :hover, explicit padding 80px+. Keep id="{section}" on root element.
+### REFINEMENT RULES
+1. **Maintain Style Consistency**: New sections must match the existing design language (typography, colors, spacing).
+2. **Premium Polish**: Ensure any changed section follows the "Mandatory Styling Rules": glassmorphism, scoped CSS, styled buttons with hover states, and explicit padding (100px+).
+3. **Robust Content**: Update content to be more detailed and relevant to the user's specific request.
+4. **Semantic Integrity**: Keep `id="{section}"` on root elements and use semantic HTML.
 
-IMPORTANT: Only return sections that need to change. Return ALL other section names in unchanged_section_names.
+IMPORTANT: Only return sections that need to change. List ALL other section names in `unchanged_section_names`.
 Output ONLY the raw JSON."""
 
 
@@ -84,26 +117,26 @@ def _style_note(style: dict | None) -> str:
     font = style.get("font", "Inter")
     font_url = font.replace(" ", "+")
     palette_notes = {
-        "minimal":     "Clean light backgrounds (#f8fafc), dark text (#0f172a), subtle borders.",
-        "dark":        "Very dark bg (#0f172a, #1e293b), indigo/purple accents (#6366f1), white text.",
-        "vibrant":     "Bold orange (#f97316), pink (#ec4899), purple (#8b5cf6) gradients.",
-        "earthy":      "Warm browns (#78350f), ambers (#d97706), cream (#fde68a) tones.",
-        "corporate":   "Deep blue (#1d4ed8) primary, professional white surfaces, clean typography.",
-        "ocean":       "Deep teal (#0d9488), cyan (#06b6d4), dark navy (#0f172a) backgrounds.",
-        "sunset":      "Warm coral (#f43f5e), orange (#fb923c), golden (#f59e0b) gradients.",
-        "forest":      "Deep green (#14532d), emerald (#10b981), natural cream (#fefce8) tones.",
-        "midnight":    "Pure black (#000000), electric blue (#3b82f6), cyan neon (#22d3ee) accents.",
-        "rose":        "Soft rose (#fda4af), deep crimson (#be123c), blush (#fff1f2) backgrounds.",
+        "minimal":     "Clean light backgrounds (#f8fafc), dark slate text (#0f172a), subtle borders, and airy spacing.",
+        "dark":        "Deep navy/charcoal backgrounds (#0f172a, #1e293b), indigo/purple accents (#6366f1), and crisp white text.",
+        "vibrant":     "Dynamic gradients using orange (#f97316), pink (#ec4899), and purple (#8b5cf6) with high energy.",
+        "earthy":      "Sophisticated warm browns (#78350f), ambers (#d97706), and cream (#fde68a) for a natural feel.",
+        "corporate":   "Professional deep blue (#1d4ed8) primary, clean white surfaces, and authoritative typography.",
+        "ocean":       "Deep teal (#0d9488), cyan (#06b6d4), and dark navy (#0f172a) for a calm, modern tech vibe.",
+        "sunset":      "Warm coral (#f43f5e), orange (#fb923c), and golden (#f59e0b) gradients that feel alive.",
+        "forest":      "Luxurious deep green (#14532d), emerald (#10b981), and natural cream (#fefce8) tones.",
+        "midnight":    "Pure pitch black (#000000), electric blue (#3b82f6), and neon cyan (#22d3ee) for a futuristic look.",
+        "rose":        "Soft rose (#fda4af), deep crimson (#be123c), and blush (#fff1f2) for a refined, elegant aesthetic.",
     }
     layout_notes = {
-        "hero":        "Full-width hero section at top, then stacked feature sections below.",
-        "grid":        "Card grid layout with 3+ columns of feature cards as primary content.",
-        "sidebar":     "Left sidebar navigation with main content area on the right.",
-        "magazine":    "Editorial magazine layout with varied card sizes and masonry-style grid.",
-        "single":      "Single column layout, centered content, max-width 720px.",
-        "bento":       "Bento box grid: asymmetric card sizes (1×1, 2×1, 1×2) like Apple's style.",
-        "split":       "50/50 split sections alternating text left/image right and vice versa.",
-        "fullscreen":  "Each section occupies 100vh, scroll-snap enabled, immersive full-screen.",
+        "hero":        "Classic high-impact hero header followed by stacked, well-spaced feature blocks.",
+        "grid":        "Modern card-based grid layout with 3+ columns, utilizing hover transforms and depth.",
+        "sidebar":     "App-like interface with a fixed left navigation sidebar and fluid main content area.",
+        "magazine":    "Dynamic editorial layout with varied typography scales, masonry-style grids, and rich imagery placeholders.",
+        "single":      "Focused single-column layout, centered content, max-width 800px, ideal for storytelling.",
+        "bento":       "Apple-inspired Bento box grid: asymmetric card sizes (1×1, 2×1, 2×2) with rounded corners and glassmorphism.",
+        "split":       "Elegant 50/50 split sections alternating between text and visual elements for rhythm.",
+        "fullscreen":  "Immersive scroll-snap experience where each section occupies 100vh with centered content.",
     }
     layout = style.get("layout", "hero")
     palette = style.get("palette", "minimal")
