@@ -15,9 +15,10 @@ class WebsiteOutput(BaseModel):
     """Full generation response (first render)."""
     title: str
     sections: list[SectionPatch]
-    full_html: str
-    full_css: str
-    full_js: str
+    # Optional: assembled from sections if the LLM omits them (graceful fallback)
+    full_html: str = ""
+    full_css: str = ""
+    full_js: str = ""
     generation_time_ms: float = 0.0
     token_count: int = 0
     # Debug-only field: populated when ?debug=true is in the request

@@ -182,6 +182,19 @@ def _parse_website(raw: str, context: str = "") -> WebsiteOutput:
     try:
         site = WebsiteOutput(**data)
         site.sections = _sort_sections(site.sections)
+
+        # Fallback assembler: if the LLM omitted full_html/full_css/full_js,
+        # reconstruct them by joining all section content.
+        if not site.full_html:
+            site.full_html = "\n".join(s.html for s in site.sections)
+            logger.info("[ASSEMBLE_FALLBACK] full_html built from %d sections", len(site.sections))
+        if not site.full_css:
+            site.full_css = "\n".join(s.css for s in site.sections)
+            logger.info("[ASSEMBLE_FALLBACK] full_css built from %d sections", len(site.sections))
+        if not site.full_js:
+            site.full_js = "\n".join(s.js for s in site.sections if s.js)
+            logger.info("[ASSEMBLE_FALLBACK] full_js built from sections with js")
+
         logger.info("[PARSE_SUCCESS] title=%r sections=%s html_chars=%s css_chars=%s",
                     site.title, [s.section for s in site.sections],
                     {s.section: len(s.html) for s in site.sections},
